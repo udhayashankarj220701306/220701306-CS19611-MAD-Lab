@@ -1,5 +1,6 @@
-package org.rajalakshmi.ex9
+package com.example.ex9
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -15,28 +16,32 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        val etText : EditText = findViewById(R.id.etText)
-        val btDisplay : Button = findViewById(R.id.btDisplay)
+        val sms : EditText = findViewById(R.id.edit_Text)
+        val alert : Button = findViewById(R.id.alert_Button)
+        val clear : Button = findViewById(R.id.clear_Button)
+        val builder = AlertDialog.Builder(this)
 
-        btDisplay.setOnClickListener {
-            val alertDialog = AlertDialog.Builder(this)
-                .setTitle("MAD LAB")
-                .setMessage(etText.text.toString())
-                .setPositiveButton("ok"){ dialog, which ->
-                    Toast.makeText(this,"You clicked ok",Toast.LENGTH_LONG).show()
-                }
-                .setNegativeButton("cancel"){dialog, which ->
-                    Toast.makeText(this,"You clicked cancel",Toast.LENGTH_LONG).show()
-                }
-                .create()
-            alertDialog.show()
+        alert.setOnClickListener {
+            if(sms.text.toString()!=""){
+                builder
+                    .setTitle("New Message")
+                    .setMessage(sms.text.toString())
+                    .setPositiveButton("ok"){ dialog, which ->
+                        Toast.makeText(this,"Alert Dialog Closed",Toast.LENGTH_LONG).show()
+                    }
+                val smsIntent=Intent(this,SmsAlert::class.java)
+                smsIntent.putExtra(sms.text.toString(),1)
+                val alertBox = builder.create()
+                alertBox.show()
+            }
+            else{
+                Toast.makeText(this,"Type Message in Message Box",Toast.LENGTH_LONG).show()
+            }
         }
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        clear.setOnClickListener {
+            sms.setText("")
         }
+
     }
 }
